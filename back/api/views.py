@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from .models import Filmes, Genero, Classificacao
-from .serializer import FilmesSerializar, GeneroSerializer, ClassificacaoSerializer
+from .models import Filmes, Genero, Classificacao, Imagem
+from .serializer import FilmesSerializar, GeneroSerializer, ClassificacaoSerializer, ImagemSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
 
 @api_view(['GET', 'POST'])
 def listar_filmes(request):
@@ -38,6 +39,10 @@ class GeneroViews(RetrieveUpdateDestroyAPIView):
 class ClassificacaoViews(RetrieveUpdateDestroyAPIView):
     queryset = Classificacao.objects.all()
     serializer_class = ClassificacaoSerializer
+
+class ImagemListCreateView(ListCreateAPIView):
+    queryset = Imagem.objects.all()
+    serializer_class = ImagemSerializer
 
 # class GeneroList(ListCreateAPIView):
 #     queryset = Genero.objects.all()

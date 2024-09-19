@@ -1,6 +1,6 @@
 # O Serializer serve para a conversão dos dados para Json
 from rest_framework import serializers
-from .models import Filmes, Genero, Classificacao
+from .models import Filmes, Genero, Classificacao, Imagem
 
 class GeneroSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,3 +19,8 @@ class ClassificacaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Classificacao
         fields = ['id', 'classific']
+
+class ImagemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Imagem
+        fields = ['id', 'imagem']

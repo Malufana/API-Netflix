@@ -165,6 +165,12 @@ export default function Home() {
     setAnoG("");
     setClassifG("");
     setIdiomaG("");
+    
+    setFilme("");
+    setGenero("");
+    setAno("");
+    setClassif("");
+    setIdioma("");
     console.log("Campos limpados com sucesso!");
   };
 
@@ -300,6 +306,8 @@ export default function Home() {
         <Pressable style={styles.btnPost} onPress={enviar}>
           <Text style={{ fontWeight: "bold" }}>POSTAR</Text>
         </Pressable>
+
+        
 
       </View>
     </View>
