@@ -17,12 +17,12 @@ const styles = StyleSheet.create({
     },
     caixaGet:{
       // borderWidth: 1,
-      width: '30%',
+      // width: '30%',
       height: 30,
       borderRadius:10,
       padding: 5,
       backgroundColor: 'grey',
-      width: "90%",
+      width: "100%",
       marginBottom: 10,
     },
     caixaId:{
@@ -102,7 +102,36 @@ const styles = StyleSheet.create({
     },
     imagemBotao:{
       borderWidth: 1
-    }
+    },
+    // banner: {
+    //   flexDirection: 'row',
+    //   display: 'flex',
+    //   justifyContent: 'space-between'
+    // },
+    posterG:{
+      backgroundColor: '#ffdbe1',
+      width: '120px',
+      height: '270px',
+      borderRadius: 10,
+    },
+    posterP: {
+      width: "30%",
+      height: 'auto',
+      backgroundColor: '#ffdbe1',
+      marginRight: 50,
+      marginTop: 27,
+      borderRadius: 10,
+      // width: "30%", 
+      // aspectRatio: 1, 
+      // backgroundColor: '#ffdbe1',
+      // marginRight: 50,
+      // marginTop: 27,
+    },
+    foto04:{
+      width: 150, 
+      height: 150,  
+    },
+
     
 })
 

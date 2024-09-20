@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Text, View, TextInput, Pressable, Image} from "react-native";
+import { Text, View, TextInput, Pressable, Image, Alert} from "react-native";
 import styles from "./styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from "expo-image-picker";
 
 export default function Home() {
   const [id, setID] = useState("");
@@ -11,6 +12,7 @@ export default function Home() {
   const [anoG, setAnoG] = useState("");
   const [classifG, setClassifG] = useState("");
   const [idiomaG, setIdiomaG] = useState("");
+  const [fileNameG, setFileNameG] = useState('');
 
   const [filme, setFilme] = useState("");
   const [genero, setGenero] = useState("");
@@ -19,6 +21,9 @@ export default function Home() {
   const [idioma, setIdioma] = useState("");
 
   const [token, setToken] = useState("");
+  const [base64, setBase64] = useState(null);
+  const [imageName, setImageName] = useState(null);
+  const [imageSource, setImageSource] = useState(" ");
 
   useEffect( () => {
     AsyncStorage.getItem("token")
@@ -34,7 +39,7 @@ export default function Home() {
           console.error("Erro ao pegar o token", error);
         }
       )
-  }, [])
+  }, [base64, imageName])
 
 
   //LISTAR FILMES
@@ -67,6 +72,7 @@ export default function Home() {
       setAnoG(response.data.ano);
       setClassifG(responseClassificacao.data.classific);
       setIdiomaG(response.data.idioma);
+      setFileNameG(response.data.fileName);
 
     } catch {
       console.log(Error);
@@ -85,6 +91,7 @@ export default function Home() {
           ano: ano,
           classific: classif,
           idioma: idioma,
+          fileName: imageName
         },
         {
           headers:{
@@ -92,6 +99,9 @@ export default function Home() {
           }
         }
       );
+
+      uploadImage(base64, imageName, token);
+
       console.log("Dados inseridos com sucesso...");
       alert("Dados inseridos com Sucesso!");
       setFilme("");
@@ -99,6 +109,7 @@ export default function Home() {
       setAno("");
       setClassif("");
       setIdioma("");
+      setBase64("");
     } catch (error) {
       console.log("Erro ao inserir os dados...");
     }
@@ -166,12 +177,53 @@ export default function Home() {
     setClassifG("");
     setIdiomaG("");
     
-    setFilme("");
-    setGenero("");
-    setAno("");
-    setClassif("");
-    setIdioma("");
     console.log("Campos limpados com sucesso!");
+  };
+
+  //IMAGEM
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1
+    });
+
+    if(!result.canceled){
+      const imageName = result.assets[0].fileName ;
+      const imageUri = result.assets[0].uri;
+      setBase64(imageUri);
+      setImageName(imageName);
+
+    }
+  };
+
+  const uploadImage = async (uri, imageName, token) => {
+    let formData = new FormData();
+    formData.append("image", {
+      uri: uri,
+      type: "image/jpg",
+      name: imageName,
+    });
+
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/images/",
+        formData,
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Imagem enviada com sucesso!", response.data);
+    } catch (error){
+      console.error(
+        "Erro ao enviar a imagem: ",
+        error.response ? error.response.data : error.message
+      );
+    }
   };
 
   return (
@@ -182,7 +234,7 @@ export default function Home() {
           GET
         </Text>
 
-        <View style={{ flexDirection: "row", padding: 10 }}>
+        <View style={{ flexDirection: "row", padding: 10}}>
           <Text>ID:</Text>
           <TextInput
             value={id}
@@ -207,41 +259,49 @@ export default function Home() {
             <Text style={{ fontWeight: "bold" }}>LIMPAR</Text>
           </Pressable>
         </View>
+        
+        <View style={{flexDirection: "row", columnGap: 20}}>
+          <View>
+            <Text>Filme</Text>
+            <TextInput
+              value={filmeG}
+              style={styles.caixaGet}
+              onChangeText={(e) => setFilmeG(e)}
+            />
 
-        <Text>Filme</Text>
-        <TextInput
-          value={filmeG}
-          style={styles.caixaGet}
-          onChangeText={(e) => setFilmeG(e)}
-        />
+            <Text>Gênero</Text>
+            <TextInput
+              value={generoG}
+              style={styles.caixaGet}
+              onChangeText={(e) => setGeneroG(e)}
+            />
 
-        <Text>Gênero</Text>
-        <TextInput
-          value={generoG}
-          style={styles.caixaGet}
-          onChangeText={(e) => setGeneroG(e)}
-        />
+            <Text>Ano</Text>
+            <TextInput
+              value={anoG}
+              style={styles.caixaGet}
+              onChangeText={(e) => setAnoG(e)}
+            />
 
-        <Text>Ano</Text>
-        <TextInput
-          value={anoG}
-          style={styles.caixaGet}
-          onChangeText={(e) => setAnoG(e)}
-        />
+            <Text>Idioma</Text>
+            <TextInput
+              value={idiomaG}
+              style={styles.caixaGet}
+              onChangeText={(e) => setIdiomaG(e)}
+            />
 
-        <Text>Idioma</Text>
-        <TextInput
-          value={idiomaG}
-          style={styles.caixaGet}
-          onChangeText={(e) => setIdiomaG(e)}
-        />
-
-        <Text>Classificação</Text>
-        <TextInput
-          value={classifG}
-          style={styles.caixaGet}
-          onChangeText={(e) => setClassifG(e)}
-        />
+            <Text>Classificação</Text>
+            <TextInput
+              value={classifG}
+              style={styles.caixaGet}
+              onChangeText={(e) => setClassifG(e)}
+            />
+          </View>
+          <View>
+            <View style={styles.posterG}></View>
+          </View>
+        </View>
+        
       </View>
 
       {/* POST */}
@@ -296,18 +356,22 @@ export default function Home() {
               style={styles.caixaPost}
             />
           </View>
-          <View style={styles.box}>
-            <Pressable style={styles.imagemBotao}>
-              <Image style={styles.imagem}></Image>
-            </Pressable>
-          </View>
+
+          <Pressable style={styles.posterP} onPress={pickImage}>
+            <Image
+              style={styles.foto04}
+              source={{
+                uri: base64,
+              }}              
+            
+            />
+          </Pressable>
+
         </View>
 
         <Pressable style={styles.btnPost} onPress={enviar}>
           <Text style={{ fontWeight: "bold" }}>POSTAR</Text>
         </Pressable>
-
-        
 
       </View>
     </View>

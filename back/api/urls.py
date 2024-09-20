@@ -16,6 +16,6 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('genero/<int:pk>', views.GeneroViews.as_view()),
     path('classificacao/<int:pk>', views.ClassificacaoViews.as_view()),
-    path('imagem/', views.ImagemListCreateView.as_view()),
+    path('imagem/', views.ImagemListCreateView.as_view(), name="Image-List-Create"),
     # path('genero', views.GeneroList.as_view())
 ] +static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

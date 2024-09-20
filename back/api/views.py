@@ -43,6 +43,14 @@ class ClassificacaoViews(RetrieveUpdateDestroyAPIView):
 class ImagemListCreateView(ListCreateAPIView):
     queryset = Imagem.objects.all()
     serializer_class = ImagemSerializer
+    perser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, format=None):
+        serializer = ImagemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
 # class GeneroList(ListCreateAPIView):
 #     queryset = Genero.objects.all()
